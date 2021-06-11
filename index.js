@@ -10,6 +10,8 @@ app.set("view engine", "html");
 
 // GET http://localhost:3000/home/?name=alex
 app.get("/", (req, res) => {
+  // We could substitute stuff in the html before it even
+  // goes to the browser.
   res.render("index");
 });
 
