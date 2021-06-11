@@ -1,7 +1,7 @@
 var path = require("path");
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 80;
+const port = process.env.PORT || 3000;
 
 app.use("/static", express.static(path.join(__dirname, "public")));
 app.engine(".html", require("ejs").__express);
@@ -10,25 +10,19 @@ app.set("view engine", "html");
 
 // GET http://localhost:3000/home/?name=alex
 app.get("/", (req, res) => {
-  // go look something up in the database
   res.render("index");
-  //res.send("<html><body>alex</body></html>");
 });
 
 app.get("/milestones", (req, res) => {
-  // go look something up in the database
   res.render("milestones");
-  //res.send("<html><body>alex</body></html>");
 });
 
-app.get("/hello", (req, res) => {
-  console.log(req);
+// How the API is made
+let clickCount = 0;
+app.get("/api/click", (req, res) => {
+  clickCount++;
 
-  // req { ip, query: {} }
-  // req.ip
-  // req.query.name
-
-  res.send("Hello " + req.query.name);
+  res.json({ count: clickCount });
 });
 
 app.listen(port, () => {
