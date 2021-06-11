@@ -19,9 +19,19 @@ app.get("/milestones", (req, res) => {
 
 // How the API is made
 let clickCount = 0;
+
+// This gets called by fetch from the client side (browser)
+// This increases the click counter and then returns the latest
+// count to the client.
 app.get("/api/click", (req, res) => {
   clickCount++;
 
+  res.json({ count: clickCount });
+});
+
+// This gets called by fetch from the client side (browser)
+// This just returns the latest count to the client
+app.get("/api/count", (req, res) => {
   res.json({ count: clickCount });
 });
 
