@@ -1,0 +1,20 @@
+{
+  "name": "live-button-feed",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexPurcell/LiveClicker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AlexPurcell/LiveClicker/issues"
+  },
+  "homepage": "https://github.com/AlexPurcell/LiveClicker#readme"
+}
