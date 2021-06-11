@@ -1,0 +1,31 @@
+.BUTTONSTYLE {
+  background-color: aqua;
+}
+
+.BLOCK2 {
+  text-align: center;
+}
+
+.MilestonesB {
+  background-color: aqua;
+}
+
+.HomeB {
+  background-color: aqua;
+}
+
+.MilestonesB:hover {
+  background-color: red;
+}
+
+.HomeB:hover {
+  background-color: red;
+}
+
+.BUTTONSTYLE:hover {
+  background-color: orange;
+}
+
+a {
+  text-decoration: none;
+}
