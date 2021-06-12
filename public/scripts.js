@@ -4,7 +4,7 @@ addEventListener("DOMContentLoaded", (event) => {
   const element = document.getElementById("CLICKER");
   element.addEventListener("click", () => {
     console.log("button clicked");
-    fetch("/api/click")
+    fetch("/api/click", { method: "POST" })
       .then((response) => response.json())
       .then((data) => {
         console.log("The current count is", data.count);
