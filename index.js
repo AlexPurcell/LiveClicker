@@ -25,7 +25,7 @@ let clickCount = 0;
 // This gets called by fetch from the client side (browser)
 // This increases the click counter and then returns the latest
 // count to the client.
-app.post("/api/click", (req, res) => {
+app.get("/api/click", (req, res) => {
   clickCount++;
 
   res.json({ count: clickCount });
@@ -33,7 +33,7 @@ app.post("/api/click", (req, res) => {
 
 // This gets called by fetch from the client side (browser)
 // This just returns the latest count to the client
-app.get("/api/count", (req, res) => {
+app.post("/api/count", (req, res) => {
   res.json({ count: clickCount });
 });
 
