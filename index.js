@@ -33,10 +33,10 @@ async function getUser(email) {
     client.query(
       "SELECT table_schema,table_name FROM information_schema.tables;",
       (err, res) => {
-        if (err) throw err;
-        for (let row of res.rows) {
-          // console.log(JSON.stringify(row));
+        if (err) {
+          reject(err);
         }
+
         client.end();
         resolve(res.rows);
       }
@@ -71,12 +71,23 @@ app.post("/login", async (req, res) => {
   // TODO: Compare the passwords.
   console.log("rows from database", user);
 
-  // Render back the login page if they don't match. TODO: Provide an error
+  // TODO: If the email/password is correct, generate a cookie for the user.
+  //       Otherwise, return them back to login with errors.
   res.render("login");
 });
 
 app.get("/admin", (req, res) => {
-  res.render("admin");
+  // TODO: Check to see if the user is logged in
+  // Based on a cookie.
+  let isAuthenticated = false;
+
+  if (!isAuthenticated) {
+    // TODO: Redirect to login with errors.
+    res.redirect("/login");
+  } else {
+    // Otherwise, show them the page.
+    res.render("admin");
+  }
 });
 // How the API is made
 let clickCount = 0;
