@@ -23,7 +23,7 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.get("/login_submit", (req, res) => {
+app.post("/login_submit", (req, res) => {
   res.render("login_submit");
 });
 
