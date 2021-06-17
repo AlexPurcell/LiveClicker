@@ -19,6 +19,17 @@ app.get("/milestones", (req, res) => {
   res.render("milestones");
 });
 
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.get("/login_submit", (req, res) => {
+  res.render("login_submit");
+});
+
+app.get("/admin", (req, res) => {
+  res.render("admin");
+});
 // How the API is made
 let clickCount = 0;
 
