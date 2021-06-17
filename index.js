@@ -19,18 +19,29 @@ const client = new Client({
   },
 });
 
-client.connect();
+// username: string - the user name of the user
+async function getUser(username) {
+  console.log("Getting user", username);
 
-client.query(
-  "SELECT table_schema,table_name FROM information_schema.tables;",
-  (err, res) => {
-    if (err) throw err;
-    for (let row of res.rows) {
-      console.log(JSON.stringify(row));
-    }
-    client.end();
-  }
-);
+  return new Promise((resolve, reject) => {
+    client.connect();
+
+    // This query would actually query your database for a user, instead of doing
+    // what it is doing. You would user the username parameter to select the correct
+    // user from the database.
+    client.query(
+      "SELECT table_schema,table_name FROM information_schema.tables;",
+      (err, res) => {
+        if (err) throw err;
+        for (let row of res.rows) {
+          console.log(JSON.stringify(row));
+        }
+        client.end();
+        resolve(res.rows);
+      }
+    );
+  });
+}
 
 // GET http://localhost:3000/home/?name=alex
 app.get("/", (req, res) => {
@@ -47,7 +58,11 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.post("/login_submit", (req, res) => {
+app.post("/login_submit", async (req, res) => {
+  const username = req.body.username;
+  const user = await getUser(username);
+
+  console.log("rows from database", user);
   res.render("login_submit");
 });
 
