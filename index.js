@@ -21,6 +21,8 @@ const client = new Client({
 });
 
 // username: string - the user name of the user
+// onSuccess: function - the function that will be called when the query is successful.
+// onError: function - the function that will be called when the query is errored.
 function getUser(email, onSuccess, onError) {
   client.connect();
 
