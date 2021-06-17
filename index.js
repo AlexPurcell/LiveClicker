@@ -1,17 +1,18 @@
 var path = require("path");
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3000;
-import * as dotenv from "dotenv";
-dotenv.config();
+require("dotenv").config();
 
 app.use("/static", express.static(path.join(__dirname, "public")));
+app.use(bodyParser.urlencoded({ extended: true }));
+
 app.engine(".html", require("ejs").__express);
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
 
 const { Client } = require("pg");
-
 const client = new Client({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -20,8 +21,8 @@ const client = new Client({
 });
 
 // username: string - the user name of the user
-async function getUser(username) {
-  console.log("Getting user", username);
+async function getUser(email) {
+  console.log("Getting user", email);
 
   return new Promise((resolve, reject) => {
     client.connect();
@@ -34,7 +35,7 @@ async function getUser(username) {
       (err, res) => {
         if (err) throw err;
         for (let row of res.rows) {
-          console.log(JSON.stringify(row));
+          // console.log(JSON.stringify(row));
         }
         client.end();
         resolve(res.rows);
@@ -54,16 +55,24 @@ app.get("/milestones", (req, res) => {
   res.render("milestones");
 });
 
+// GET /login - returns the login page
 app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.post("/login_submit", async (req, res) => {
-  const username = req.body.username;
-  const user = await getUser(username);
+// POST /login - validates the submitted form data
+app.post("/login", async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
 
+  console.log("form submitted", email, password);
+  const user = await getUser(email);
+
+  // TODO: Compare the passwords.
   console.log("rows from database", user);
-  res.render("login_submit");
+
+  // Render back the login page if they don't match. TODO: Provide an error
+  res.render("login");
 });
 
 app.get("/admin", (req, res) => {
