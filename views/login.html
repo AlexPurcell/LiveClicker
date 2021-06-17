@@ -9,10 +9,17 @@
     <title>Login</title>
   </head>
   <body>
+    <style>
+      .error {
+        text-align: center;
+      }
+    </style>
     <h1>
       <center><strong>Login</strong></center>
     </h1>
     <div class="container">
+      <% // If there is an error in our view model, render it here %>
+      <div class="error"><%= error %></div>
       <form method="POST" action="/login">
         <center>
           <input type="email" name="email" placeholder="Email" required />

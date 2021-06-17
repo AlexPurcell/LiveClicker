@@ -21,27 +21,24 @@ const client = new Client({
 });
 
 // username: string - the user name of the user
-async function getUser(email) {
-  console.log("Getting user", email);
+function getUser(email, onSuccess, onError) {
+  client.connect();
 
-  return new Promise((resolve, reject) => {
-    client.connect();
+  console.log("Looking up user with email", email);
 
-    // This query would actually query your database for a user, instead of doing
-    // what it is doing. You would user the username parameter to select the correct
-    // user from the database.
-    client.query(
-      "SELECT table_schema,table_name FROM information_schema.tables;",
-      (err, res) => {
-        if (err) {
-          reject(err);
-        }
-
-        client.end();
-        resolve(res.rows);
+  // TODO: This query will need to select from a users table in the database
+  // and look up the user with the specified email.
+  client.query(
+    "SELECT table_schema,table_name FROM information_schema.tables;",
+    (err, res) => {
+      if (err) {
+        onError(err);
       }
-    );
-  });
+
+      client.end();
+      onSuccess(res.rows);
+    }
+  );
 }
 
 // GET http://localhost:3000/home/?name=alex
@@ -57,23 +54,42 @@ app.get("/milestones", (req, res) => {
 
 // GET /login - returns the login page
 app.get("/login", (req, res) => {
-  res.render("login");
+  // Render the login view. Provide no error to the view.
+  res.render("login", { error: "" });
 });
 
 // POST /login - validates the submitted form data
-app.post("/login", async (req, res) => {
+app.post("/login", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
   console.log("form submitted", email, password);
-  const user = await getUser(email);
+  getUser(
+    email,
+    (user) => {
+      // This is the success callback (2nd parameter of getUser)
 
-  // TODO: Compare the passwords.
-  console.log("rows from database", user);
+      // TODO: Compare the passwords.
+      console.log("rows from database", user);
 
-  // TODO: If the email/password is correct, generate a cookie for the user.
-  //       Otherwise, return them back to login with errors.
-  res.render("login");
+      const passwordsMatch = false; // TODO: Compare the passwords.
+      if (passwordsMatch) {
+        // assign a cookie and redirect to home page
+        res.render("index");
+      } else {
+        // The user supplied bad credentials.
+        // Render the login page to them again with an error.
+        res.render("login", { error: "Incorrect email and/or password" });
+      }
+    },
+    (error) => {
+      // This is the error callback (3rd parameter of getUser)
+
+      // TODO: If the email/password is correct, generate a cookie for the user.
+      //       Otherwise, return them back to login with errors.
+      res.render("login");
+    }
+  );
 });
 
 app.get("/admin", (req, res) => {
