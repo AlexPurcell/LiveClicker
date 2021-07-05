@@ -19,7 +19,9 @@
     </h1>
     <div class="container">
       <% // If there is an error in our view model, render it here %>
-      <div class="error"><%= error %></div>
+      <% if (typeof error === 'object' && error) { %>
+        <h2 class="error"><%= error %></h2>
+      <% } %>
       <form method="POST" action="/login">
         <center>
           <input type="email" name="email" placeholder="Email" required />
