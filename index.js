@@ -1,12 +1,16 @@
 var path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser')
+
+const crypto = require('./crypto');
 const app = express();
 const port = process.env.PORT || 3000;
 require("dotenv").config();
 
 app.use("/static", express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.engine(".html", require("ejs").__express);
 app.set("views", path.join(__dirname, "views"));
@@ -93,8 +97,11 @@ app.post("/login", (req, res) => {
 
       const passwordsMatch = user.password === password;
       if (passwordsMatch) {
-        // TODO: Assign a cookie and redirect to home page
-        res.render("index");
+        const cookieValue = crypto.encrypt(JSON.stringify(user));
+
+        res
+          .cookie('auth', cookieValue, { expire: 360000 + Date.now() }) 
+          .redirect('/admin');
         return;
       } 
 
@@ -108,17 +115,22 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/admin", (req, res) => {
-  // TODO: Check to see if the user is logged in
-  // Based on a cookie.
-  let isAuthenticated = false;
+  // User needs to have an auth cookie to access this page.
 
-  if (!isAuthenticated) {
-    // TODO: Redirect to login with errors.
+  const cookie = req.cookies.auth;
+  
+  if (!cookie) {
     res.redirect("/login");
-  } else {
-    // Otherwise, show them the page.
-    res.render("admin");
+    return;
   }
+  
+  const decrypted = crypto.decrypt(cookie);
+  if (decrypted) {
+    // Show them the page.
+    res.render("admin");
+    return;
+  }
+  
 });
 // How the API is made
 let clickCount = 0;
