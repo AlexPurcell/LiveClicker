@@ -31,14 +31,18 @@ function getUser(email, onSuccess, onError) {
   // TODO: This query will need to select from a users table in the database
   // and look up the user with the specified email.
   client.query(
-    "SELECT table_schema,table_name FROM information_schema.tables;",
+    // This is bad because it can be exploited via sql injection
+    // TODO: Make this a parameterized query instead.
+    `SELECT * FROM members WHERE "email" = '${email}'`,
     (err, res) => {
       if (err) {
         onError(err);
       }
 
       client.end();
-      onSuccess(res.rows);
+      
+      // If user is found, user will be first item of the array.
+      onSuccess(res.rows[0]);
     }
   );
 }
